@@ -292,7 +292,7 @@ function _getResByAPI(url, apikey) {
       break;
     default:
       res = "Error " + responseCode;
-      _myLog(
+      console.error(
         "Error: " +
           response.getResponseCode() +
           "\n\n" +
@@ -338,24 +338,4 @@ function strDateToYMDH(strDate) {
     }
   }
   return "";
-}
-
-function _myLog(log) {
-  if (!log) {
-    log = "none";
-  }
-  if (typeof log == "object") {
-    log = JSON.stringify(log);
-  }
-  var message = log.toString() || "-";
-  var ss = SpreadsheetApp.openById(
-    "1QWGp6aBBtJVWxCsA0yoAM_qPNhwtPwVYV1wgzwR1cgM"
-  );
-  var sheet = ss.getSheets()[0];
-  var curDate = Utilities.formatDate(
-    new Date(),
-    "GMT+3",
-    "yyyy-MM-dd HH:mm:ss"
-  );
-  sheet.appendRow([curDate, "rmc :: " + message]);
 }
