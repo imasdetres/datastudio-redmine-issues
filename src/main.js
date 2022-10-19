@@ -30,9 +30,18 @@ function getConfig(request) {
   config
     .newTextInput()
     .setId("project_id")
-    .setName("ID project ")
+    .setName("Project ID")
     .setHelpText("Enter project ID")
-    .setPlaceholder("");
+    .setPlaceholder("")
+    .setAllowOverride(true);
+
+  config
+    .newTextInput()
+    .setId("query_id")
+    .setName("Query ID")
+    .setHelpText("Enter query ID")
+    .setPlaceholder("")
+    .setAllowOverride(true);
 
   config
     .newCheckbox()
@@ -217,6 +226,7 @@ function getData(request) {
   var domain = request.configParams.domain;
   var apikey = request.configParams.apikey;
   var allow_spent_hours = request.configParams.allow_spent_hours;
+  var queryId = request.configParams.query_id;
   var projectId = request.configParams.project_id;
   if (!projectId) {
     projectId = 0;
@@ -244,14 +254,12 @@ function getData(request) {
   var data_response = [];
 
   for (var i = 1; (i - 1) * pager.limit <= pager.total_count && i < 10; i++) {
-    var url =
-      domain +
-      "/projects/" +
-      projectId +
-      "/issues.json?limit=" +
-      pager.limit +
-      "&page=" +
-      i;
+    var query_string = [];
+    if (queryId)
+      query_string.push("query_id="+queryId);
+    query_string.push("limit="+pager.limit);
+    query_string.push("page="+i);
+    var url = domain + "/projects/" + projectId + "/issues.json" + "?" + query_string.join("&");
     var r_data_response = _getResByAPI(url, apikey);
     data_response = data_response.concat(r_data_response.issues);
     if (r_data_response.total_count) {
