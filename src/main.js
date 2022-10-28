@@ -69,6 +69,11 @@ function getFields() {
     .setDescription("ID issue");
   fields
     .newDimension()
+    .setId("subject")
+    .setName("Subject")
+    .setType(types.TEXT);
+  fields
+    .newDimension()
     .setId("project")
     .setName("Project")
     .setType(types.TEXT)
@@ -158,6 +163,9 @@ function responseToRows(requestedFields, responseData) {
       switch (field.getId()) {
         case "id":
           values.push(item.id.toString());
+          break;
+        case "subject":
+          values.push(item.subject.toString());
           break;
         case "project":
           values.push(item.project.name.toString());
