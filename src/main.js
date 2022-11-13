@@ -1,7 +1,5 @@
 var cc = DataStudioApp.createCommunityConnector();
 
-var regexForYMDH = /^(\d\d)T(\d\d):/;
-
 // https://developers.google.com/datastudio/connector/reference#isadminuser
 function isAdminUser() {
   return false;
@@ -134,12 +132,12 @@ function getFields() {
     .newMetric()
     .setId("created_on")
     .setName("Created On")
-    .setType(types.YEAR_MONTH_DAY_HOUR);
+    .setType(types.YEAR_MONTH_DAY_MINUTE);
   fields
     .newMetric()
     .setId("updated_on")
     .setName("Updated On")
-    .setType(types.YEAR_MONTH_DAY_HOUR);
+    .setType(types.YEAR_MONTH_DAY_MINUTE);
   fields
     .newMetric()
     .setId("spent_hours")
@@ -210,11 +208,11 @@ function responseToRows(requestedFields, responseData) {
           values.push(due_date);
           break;
         case "created_on":
-          var created_on = strDateToYMDH(item.created_on);
+          var created_on = strDateToYMDHM(item.created_on);
           values.push(created_on);
           break;
         case "updated_on":
-          var updated_on = strDateToYMDH(item.updated_on);
+          var updated_on = strDateToYMDHM(item.updated_on);
           values.push(updated_on);
           break;
         case "spent_hours":
@@ -338,18 +336,22 @@ function strDateToYMD(strDate) {
 }
 
 /**
- * "2019-12-06T07:36:57Z" -> 2019110907
+ * "2019-12-06T07:36:57Z" -> 201911090736
  *
  **/
-function strDateToYMDH(strDate) {
+var regexForYMDHM = /^(\d\d)T(\d\d):(\d\d):/;
+function strDateToYMDHM(strDate) {
   if (strDate) {
     var dateParts = strDate.split("-");
     if (dateParts[0] && dateParts[1] && dateParts[2]) {
-      var hours = regexForYMDH.exec(dateParts[2])
-        ? regexForYMDH.exec(dateParts[2])[2]
+      var hours = regexForYMDHM.exec(dateParts[2])
+        ? regexForYMDHM.exec(dateParts[2])[2]
         : "00";
-      dateParts[2] = regexForYMDH.exec(dateParts[2])[1];
-      return dateParts[0] + dateParts[1] + dateParts[2] + hours;
+      var minutes = regexForYMDHM.exec(dateParts[2])
+        ? regexForYMDHM.exec(dateParts[2])[3]
+        : "00";
+      dateParts[2] = regexForYMDHM.exec(dateParts[2])[1];
+      return dateParts[0] + dateParts[1] + dateParts[2] + hours + minutes;
     }
   }
   return "";
