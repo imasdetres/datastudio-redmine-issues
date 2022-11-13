@@ -113,8 +113,7 @@ function getFields() {
     .newMetric()
     .setId("done_ratio")
     .setName("Done Ratio")
-    .setType(types.NUMBER)
-    .setAggregation(aggregations.AVG);
+    .setType(types.NUMBER);
   fields
     .newMetric()
     .setId("estimated_hours")
